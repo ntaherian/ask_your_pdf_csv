@@ -10,3 +10,4 @@ matplotlib
 pandas
 tabulate
 PyPDF2
+bs4

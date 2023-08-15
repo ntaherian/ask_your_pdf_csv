@@ -13,7 +13,6 @@ from render import user_msg_container_html_template, bot_msg_container_html_temp
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Chroma
-from pandasai.llm.open_assistant import OpenAssistant
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re

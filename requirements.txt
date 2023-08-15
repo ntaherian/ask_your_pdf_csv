@@ -11,3 +11,4 @@ pandas
 tabulate
 PyPDF2
 bs4
+OpenAssistant

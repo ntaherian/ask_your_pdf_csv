@@ -11,8 +11,6 @@ pandas
 tabulate
 PyPDF2
 bs4
-PyPDF2==3.0.1
-python-dotenv==1.0.0
 plotly
 python-dotenv
 tiktoken

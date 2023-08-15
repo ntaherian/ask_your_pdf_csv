@@ -14,3 +14,4 @@ bs4
 plotly
 python-dotenv
 tiktoken
+streamlit==1.18.1

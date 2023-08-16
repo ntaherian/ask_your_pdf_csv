@@ -1,5 +1,5 @@
 plotly
-pandasai==0.8.4
+pandasai==0.6.8
 langchain
 python-dotenv
 faiss-cpu

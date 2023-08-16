@@ -14,3 +14,6 @@ plotly
 python-dotenv
 tiktoken
 streamlit==1.18.1
+xlrd==2.0.1
+lxml==4.9.2
+matplotlib==3.6.2

@@ -152,16 +152,19 @@ def main():
               
         except:
         
-            llm =  pandasai.llm.OpenAI()
+            llm = OpenAI()
             # create PandasAI object, passing the LLM
-            #pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
             #pandas_ai.clear_cache()
-            df = SmartDatalake(list(dataframes.values()), config={"llm": llm})
         
             if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
                 question = st.session_state.input + ' ' + 'using seaborn'
             else:
                 question = st.session_state.input
+
+            #fig = go.Figure()
+            fig = plt.gcf()
+            x = pandas_ai.run(list(dataframes.values()), question)
 
             #fig = go.Figure()
             fig = plt.gcf()

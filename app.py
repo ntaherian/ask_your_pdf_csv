@@ -27,7 +27,7 @@ from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
 from pandasai import SmartDataframe
 from pandasai import SmartDatalake
-from pandasai.llm import OpenAI
+import pandasai
 
 
 def submit():

@@ -25,7 +25,7 @@ import pandas as pd
 from langchain.agents import create_csv_agent
 from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
-from pandasai import SmartDataframe
+#from pandasai import SmartDataframe
 #from pandasai import SmartDatalake
 #import pandasai
 

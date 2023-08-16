@@ -107,7 +107,7 @@ def main():
         file_name = file.split('/')[-1].split('.')[0]
         
         # Read the CSV file into a DataFrame
-        df = SmartDataframe(file)
+        df = pd.read_csv(file)
         
         # Store the DataFrame in the dictionary
         dataframes[file_name] = df
@@ -149,10 +149,11 @@ def main():
               
         except:
         
-            #llm = OpenAI()
+            llm = OpenAI()
             # create PandasAI object, passing the LLM
             #pandas_ai = PandasAI(llm, conversational=False, verbose=True)
             #pandas_ai.clear_cache()
+            df = SmartDataframe(dataframes, config={"llm": llm})
         
             if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
                 question = st.session_state.input + ' ' + 'using seaborn'
@@ -162,7 +163,7 @@ def main():
             #fig = go.Figure()
             fig = plt.gcf()
             #x = pandas_ai.run(list(dataframes.values()), question)
-            x = list(dataframes.values()).chat(question)
+            x = df.chat(question)
             if fig.get_axes() > 0:
                 st.session_state.chat_history.append((st.session_state.input, fig))
             

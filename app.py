@@ -27,6 +27,8 @@ from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
 from pandasai import SmartDataframe
 from pandasai import SmartDatalake
+from pandasai.llm import OpenAI
+
 
 def submit():
     st.session_state.input = st.session_state.widget
@@ -150,7 +152,7 @@ def main():
               
         except:
         
-            llm = OpenAI()
+            llm =  pandasai.llm.OpenAI()
             # create PandasAI object, passing the LLM
             #pandas_ai = PandasAI(llm, conversational=False, verbose=True)
             #pandas_ai.clear_cache()

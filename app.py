@@ -153,7 +153,7 @@ def main():
             # create PandasAI object, passing the LLM
             #pandas_ai = PandasAI(llm, conversational=False, verbose=True)
             #pandas_ai.clear_cache()
-            df = SmartDataframe(dataframes, config={"llm": llm})
+            df = SmartDatalake(list(dataframes.values()), config={"llm": llm})
         
             if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
                 question = st.session_state.input + ' ' + 'using seaborn'

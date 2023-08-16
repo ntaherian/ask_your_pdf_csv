@@ -166,7 +166,7 @@ def main():
             fig = plt.gcf()
             x = pandas_ai.run(list(dataframes.values()), question)
 
-            if fig.get_axes() > 0:
+            if fig.get_axes():
                 st.session_state.chat_history.append((st.session_state.input, fig))
             
             else:

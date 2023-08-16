@@ -25,6 +25,7 @@ import pandas as pd
 from langchain.agents import create_csv_agent
 from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
+from pandasai import SmartDataframe
 
 def submit():
     st.session_state.input = st.session_state.widget
@@ -106,7 +107,7 @@ def main():
         file_name = file.split('/')[-1].split('.')[0]
         
         # Read the CSV file into a DataFrame
-        df = pd.read_csv(file)
+        df = SmartDataframe(file)
         
         # Store the DataFrame in the dictionary
         dataframes[file_name] = df
@@ -148,9 +149,9 @@ def main():
               
         except:
         
-            llm = OpenAI()
+            #llm = OpenAI()
             # create PandasAI object, passing the LLM
-            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+            #pandas_ai = PandasAI(llm, conversational=False, verbose=True)
             #pandas_ai.clear_cache()
         
             if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
@@ -160,8 +161,9 @@ def main():
 
             #fig = go.Figure()
             fig = plt.gcf()
+            #x = pandas_ai.run(list(dataframes.values()), question)
             x = pandas_ai.run(list(dataframes.values()), question)
-
+            x = dataframes.chat(question)
             if fig.get_axes() > 0:
                 st.session_state.chat_history.append((st.session_state.input, fig))
             

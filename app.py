@@ -174,7 +174,7 @@ def main():
             
             
           
-    elif button_clicked_2:
+    if button_clicked_2:
         try:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
@@ -209,7 +209,7 @@ def main():
                 
     # Display chat history
     for message in st.session_state.chat_history[::-1]:
-        if message[0]:
+        if message[1]:
             st.write(user_msg_container_html_template.replace("$MSG", message[0]), unsafe_allow_html=True)
             try:
                 st.pyplot(message[1])

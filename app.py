@@ -25,10 +25,6 @@ import pandas as pd
 from langchain.agents import create_csv_agent
 from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
-#from pandasai import SmartDataframe
-#from pandasai import SmartDatalake
-#import pandasai
-
 
 def submit():
     st.session_state.input = st.session_state.widget
@@ -128,6 +124,8 @@ def main():
     # Initialize session state for chat history
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
+    if 'chat_history_docs' not in st.session_state:
+        st.session_state.chat_history_docs = []
     if 'input' not in st.session_state:
         st.session_state.input = ''
             
@@ -139,30 +137,7 @@ def main():
     
     # extract the text
     if button_clicked_1:
-        try:
-            llm = OpenAI()
-            # create PandasAI object, passing the LLM
-            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
-            #pandas_ai.clear_cache()
-        
-            if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
-                question = st.session_state.input + ' ' + 'using seaborn'
-            else:
-                question = st.session_state.input
-
-            #fig = go.Figure()
-            fig = plt.gcf()
-            x = pandas_ai.run(list(dataframes.values()), question)
-
-            if fig.get_axes():
-                st.session_state.chat_history.append((st.session_state.input, fig))
-            
-            else:
-                st.session_state.chat_history.append((st.session_state.input, x))
-
-              
-        except:
-        
+        if pdf_docs and not csv_files:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -170,13 +145,11 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history})
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
               
-            
-          
-    if button_clicked_2:
-        try:
+        elif csv_files and not pdf_docs:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -196,9 +169,44 @@ def main():
             
             else:
                 st.session_state.chat_history.append((st.session_state.input, x))
+            
+        else:
+            try:
+                docs = knowledge_base.similarity_search(st.session_state.input)
+            
+                qa = ConversationalRetrievalChain.from_llm(
+                    ChatOpenAI(temperature=0.1, model="gpt-4"),
+                    knowledge_base.as_retriever()
+                )
+                with get_openai_callback() as cb:
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  
+            except:
+                llm = OpenAI()
+                # create PandasAI object, passing the LLM
+                pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+                #pandas_ai.clear_cache()
+            
+                if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                    question = st.session_state.input + ' ' + 'using seaborn'
+                else:
+                    question = st.session_state.input
 
-              
-        except:
+                fig = plt.gcf()
+                x = pandas_ai.run(list(dataframes.values()), question)
+
+                if fig.get_axes():
+                    st.session_state.chat_history.append((st.session_state.input, fig))
+                
+                else:
+                    st.session_state.chat_history.append((st.session_state.input, x))
+                
+                
+          
+    if button_clicked_2:
+        if pdf_docs and not csv_files:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -206,9 +214,62 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history})
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+              
+        elif csv_files and not pdf_docs:
+            llm = OpenAI()
+            # create PandasAI object, passing the LLM
+            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+            #pandas_ai.clear_cache()
+        
+            if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                question = st.session_state.input + ' ' + 'using seaborn'
+            else:
+                question = st.session_state.input
+
+            fig = plt.gcf()
+            x = pandas_ai.run(list(dataframes.values()), question)
+
+            if fig.get_axes():
+                st.session_state.chat_history.append((st.session_state.input, fig))
+            
+            else:
+                st.session_state.chat_history.append((st.session_state.input, x))
+        else:
+            try:
+                docs = knowledge_base.similarity_search(st.session_state.input)
+            
+                qa = ConversationalRetrievalChain.from_llm(
+                    ChatOpenAI(temperature=0.1, model="gpt-3.5-turbo"),
+                    knowledge_base.as_retriever()
+                )
+                with get_openai_callback() as cb:
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  
+            except:
+                llm = OpenAI()
+                # create PandasAI object, passing the LLM
+                pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+                #pandas_ai.clear_cache()
+            
+                if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                    question = st.session_state.input + ' ' + 'using seaborn'
+                else:
+                    question = st.session_state.input
+
+                fig = plt.gcf()
+                x = pandas_ai.run(list(dataframes.values()), question)
+
+                if fig.get_axes():
+                    st.session_state.chat_history.append((st.session_state.input, fig))
                 
+                else:
+                    st.session_state.chat_history.append((st.session_state.input, x))
+
     # Display chat history
     for message in st.session_state.chat_history[::-1]:
         if message[0]:

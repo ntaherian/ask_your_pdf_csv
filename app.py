@@ -140,6 +140,29 @@ def main():
     # extract the text
     if button_clicked_1:
         try:
+            llm = OpenAI()
+            # create PandasAI object, passing the LLM
+            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+            #pandas_ai.clear_cache()
+        
+            if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                question = st.session_state.input + ' ' + 'using seaborn'
+            else:
+                question = st.session_state.input
+
+            #fig = go.Figure()
+            fig = plt.gcf()
+            x = pandas_ai.run(list(dataframes.values()), question)
+
+            if fig.get_axes():
+                st.session_state.chat_history.append((st.session_state.input, fig))
+            
+            else:
+                st.session_state.chat_history.append((st.session_state.input, x))
+
+              
+        except:
+        
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -150,8 +173,10 @@ def main():
               response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history})
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
               
-        except:
-        
+            
+          
+    if button_clicked_2:
+        try:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -171,11 +196,9 @@ def main():
             
             else:
                 st.session_state.chat_history.append((st.session_state.input, x))
-            
-            
-          
-    if button_clicked_2:
-        try:
+
+              
+        except:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -185,27 +208,6 @@ def main():
             with get_openai_callback() as cb:
               response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history})
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
-              
-        except:
-            llm = OpenAI()
-            # create PandasAI object, passing the LLM
-            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
-            #pandas_ai.clear_cache()
-        
-            if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
-                question = st.session_state.input + ' ' + 'using seaborn'
-            else:
-                question = st.session_state.input
-
-            #fig = go.Figure()
-            fig = plt.gcf()
-            x = pandas_ai.run(list(dataframes.values()), question)
-
-            if fig.get_axes():
-                st.session_state.chat_history.append((st.session_state.input, fig))
-            
-            else:
-                st.session_state.chat_history.append((st.session_state.input, x))
                 
     # Display chat history
     for message in st.session_state.chat_history[::-1]:

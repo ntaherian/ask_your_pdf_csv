@@ -202,7 +202,7 @@ def main():
                 
                 else:
                     st.session_state.chat_history.append((st.session_state.input, x))
-                
+                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
                 
           
     if button_clicked_2:
@@ -269,6 +269,7 @@ def main():
                 
                 else:
                     st.session_state.chat_history.append((st.session_state.input, x))
+                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
 
     # Display chat history
     for message in st.session_state.chat_history[::-1]:

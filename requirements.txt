@@ -16,5 +16,5 @@ xlrd==2.0.1
 lxml==4.9.2
 bs4
 beautifulsoup4
-pptx
-docx
+python-pptx
+python-docx

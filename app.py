@@ -25,6 +25,8 @@ import pandas as pd
 from langchain.agents import create_csv_agent
 from langchain.agents.agent_types import AgentType
 from pandasai import PandasAI
+import docx
+from pptx import Presentation
 
 def submit():
     st.session_state.input = st.session_state.widget
@@ -37,6 +39,26 @@ def get_pdf_text(pdf_docs):
         for page in pdf_reader.pages:
             text += page.extract_text()
     return text
+    
+    
+def get_docx_text(word_docs):
+    text = ""
+    for word in word_docs:
+        doc_reader = docx.Document(word)
+        for paragraph in doc_reader.paragraphs:
+            text += paragraph.text
+    return text
+    
+def get_ppt_text(ppt_docs):
+    text = ""
+    for ppt in ppt_docs:
+        ppt_reader = Presentation(ppt)
+        for slide in ppt_reader.slides:
+            for shape in slide.shapes:
+                if hasattr(shape, "text"):
+                    text += shape.text
+    return text
+    
     
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(
@@ -57,8 +79,8 @@ def get_vectorstore(text_chunks):
     
 def main():
     load_dotenv()
-    st.set_page_config(page_title="Ask your PDF",initial_sidebar_state="expanded")
-    st.header("Ask your PDFs and CSVs💬")
+    st.set_page_config(page_title="Ask your documents",initial_sidebar_state="expanded")
+    st.header("Ask your text documents and CSVs💬")
     st.set_option('deprecation.showPyplotGlobalUse', False)
 
     # Add custom CSS styles to change the background color
@@ -73,10 +95,9 @@ def main():
         unsafe_allow_html=True
     )
 
-
     # upload file
     uploaded_files = st.file_uploader(
-            "Upload your PDFs or CSVs here", accept_multiple_files=True)
+            "Upload your PDFs, Word docs, PowerPoints or CSVs here", accept_multiple_files=True)
             
     # Create a temporary directory to store the uploaded files
     temp_dir = tempfile.mkdtemp()
@@ -96,6 +117,8 @@ def main():
     # Get all CSV files in the temporary directory
     csv_files = glob.glob(os.path.join(temp_path, "*.csv"))
     pdf_docs = glob.glob(os.path.join(temp_path, "*.pdf"))
+    word_docs = glob.glob(os.path.join(temp_path, "*.docx"))
+    ppt_docs = glob.glob(os.path.join(temp_path, "*.ppt*"))
 
     # Create an empty dictionary to store the DataFrames
     dataframes = {}
@@ -111,7 +134,11 @@ def main():
         # Store the DataFrame in the dictionary
         dataframes[file_name] = df
             
-    raw_text = get_pdf_text(pdf_docs)
+    pdf_raw_text = get_pdf_text(pdf_docs)
+    docx_raw_text = get_docx_text(word_docs)
+    ppt_raw_text = get_ppt_text(ppt_docs)
+    
+    raw_text = pdf_raw_text+docx_raw_text+ppt_raw_text
 
     # get the text chunks
     text_chunks = get_text_chunks(raw_text)
@@ -128,16 +155,15 @@ def main():
         st.session_state.chat_history_docs = []
     if 'input' not in st.session_state:
         st.session_state.input = ''
-            
+    
+    
     user_question = st.text_input("Ask your question and click on the LLM model you want to use:",key='widget', on_change=submit)
 
     button_clicked_1 = st.button("gpt-4")
     button_clicked_2 = st.button("gpt-3.5-turbo")
-    #button_clicked_3 = st.button("text-davinci-003")
     
-    # extract the text
     if button_clicked_1:
-        if pdf_docs and not csv_files:
+        if raw_text and not csv_files:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -149,7 +175,7 @@ def main():
               st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
               
-        elif csv_files and not pdf_docs:
+        elif csv_files and not raw_text:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -204,9 +230,8 @@ def main():
                     st.session_state.chat_history.append((st.session_state.input, x))
                     st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
                 
-          
-    if button_clicked_2:
-        if pdf_docs and not csv_files:
+    elif button_clicked_2:
+        if raw_text and not csv_files:
             docs = knowledge_base.similarity_search(st.session_state.input)
         
             qa = ConversationalRetrievalChain.from_llm(
@@ -218,7 +243,7 @@ def main():
               st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history.append((st.session_state.input, response["answer"]))
               
-        elif csv_files and not pdf_docs:
+        elif csv_files and not raw_text:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -270,6 +295,75 @@ def main():
                 else:
                     st.session_state.chat_history.append((st.session_state.input, x))
                     st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
+                    
+    else:
+        if raw_text and not csv_files:
+            docs = knowledge_base.similarity_search(st.session_state.input)
+        
+            qa = ConversationalRetrievalChain.from_llm(
+                ChatOpenAI(temperature=0.1, model="gpt-4"),
+                knowledge_base.as_retriever()
+            )
+            with get_openai_callback() as cb:
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
+              st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+              
+        elif csv_files and not raw_text:
+            llm = OpenAI()
+            # create PandasAI object, passing the LLM
+            pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+            #pandas_ai.clear_cache()
+        
+            if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                question = st.session_state.input + ' ' + 'using seaborn'
+            else:
+                question = st.session_state.input
+
+            #fig = go.Figure()
+            fig = plt.gcf()
+            x = pandas_ai.run(list(dataframes.values()), question)
+
+            if fig.get_axes():
+                st.session_state.chat_history.append((st.session_state.input, fig))
+            
+            else:
+                st.session_state.chat_history.append((st.session_state.input, x))
+            
+        else:
+            try:
+                docs = knowledge_base.similarity_search(st.session_state.input)
+            
+                qa = ConversationalRetrievalChain.from_llm(
+                    ChatOpenAI(temperature=0.1, model="gpt-4"),
+                    knowledge_base.as_retriever()
+                )
+                with get_openai_callback() as cb:
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
+                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  
+            except:
+                llm = OpenAI()
+                # create PandasAI object, passing the LLM
+                pandas_ai = PandasAI(llm, conversational=False, verbose=True)
+                #pandas_ai.clear_cache()
+            
+                if any(word in st.session_state.input for word in ["plot","chart","Plot","Chart"]):
+                    question = st.session_state.input + ' ' + 'using seaborn'
+                else:
+                    question = st.session_state.input
+
+                fig = plt.gcf()
+                x = pandas_ai.run(list(dataframes.values()), question)
+
+                if fig.get_axes():
+                    st.session_state.chat_history.append((st.session_state.input, fig))
+                
+                else:
+                    st.session_state.chat_history.append((st.session_state.input, x))
+                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
+
 
     # Display chat history
     for message in st.session_state.chat_history[::-1]:

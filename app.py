@@ -153,6 +153,8 @@ def main():
         st.session_state.chat_history_docs = []
     if 'input' not in st.session_state:
         st.session_state.input = ''
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
     
     
     user_question = st.text_input("Ask your question and click on the LLM model you want to use:",key='widget', on_change=submit)

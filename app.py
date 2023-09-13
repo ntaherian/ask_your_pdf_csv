@@ -171,11 +171,11 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
               st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
               
-        elif csv_files and not raw_text:
+        if csv_files and not raw_text:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -205,7 +205,7 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
                   st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
                   st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
                   
@@ -239,11 +239,11 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
               st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
               
-        elif csv_files and not raw_text:
+        if csv_files and not raw_text:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -271,7 +271,7 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
                   st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
                   st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
                   
@@ -305,11 +305,11 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
               st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
               st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
               
-        elif csv_files and not raw_text:
+        if csv_files and not raw_text:
             llm = OpenAI()
             # create PandasAI object, passing the LLM
             pandas_ai = PandasAI(llm, conversational=False, verbose=True)
@@ -339,7 +339,7 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history2": st.session_state.chat_history2_docs})
+                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history2_docs})
                   st.session_state.chat_history2_docs.append((st.session_state.input, response["answer"]))
                   st.session_state.chat_history2.append((st.session_state.input, response["answer"]))
                   

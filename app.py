@@ -149,12 +149,12 @@ def main():
 
             
     # Initialize session state for chat history
-    if 'chat_history_docs' not in st.session_state:
-        st.session_state.chat_history_docs = []
+    if 'chat_history1_docs' not in st.session_state:
+        st.session_state.chat_history1_docs = []
     if 'input' not in st.session_state:
         st.session_state.input = ''
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
+    if 'chat_history1' not in st.session_state:
+        st.session_state.chat_history1 = []
     
     
     user_question = st.text_input("Ask your question and click on the LLM model you want to use:",key='widget', on_change=submit)
@@ -171,9 +171,9 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-              st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+              response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+              st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+              st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
               
         elif csv_files and not raw_text:
             llm = OpenAI()
@@ -191,10 +191,10 @@ def main():
             x = pandas_ai.run(list(dataframes.values()), question)
 
             if fig.get_axes():
-                st.session_state.chat_history.append((st.session_state.input, fig))
+                st.session_state.chat_history1.append((st.session_state.input, fig))
             
             else:
-                st.session_state.chat_history.append((st.session_state.input, x))
+                st.session_state.chat_history1.append((st.session_state.input, x))
             
         else:
             try:
@@ -205,9 +205,9 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+                  st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
                   
             except:
                 llm = OpenAI()
@@ -224,11 +224,11 @@ def main():
                 x = pandas_ai.run(list(dataframes.values()), question)
 
                 if fig.get_axes():
-                    st.session_state.chat_history.append((st.session_state.input, fig))
+                    st.session_state.chat_history1.append((st.session_state.input, fig))
                 
                 else:
-                    st.session_state.chat_history.append((st.session_state.input, x))
-                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
+                    st.session_state.chat_history1.append((st.session_state.input, x))
+                    st.session_state.chat_history1_docs.append((st.session_state.input, str(x)))
                 
     elif button_clicked_2:
         if raw_text and not csv_files:
@@ -239,9 +239,9 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-              st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+              response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+              st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+              st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
               
         elif csv_files and not raw_text:
             llm = OpenAI()
@@ -258,10 +258,10 @@ def main():
             x = pandas_ai.run(list(dataframes.values()), question)
 
             if fig.get_axes():
-                st.session_state.chat_history.append((st.session_state.input, fig))
+                st.session_state.chat_history1.append((st.session_state.input, fig))
             
             else:
-                st.session_state.chat_history.append((st.session_state.input, x))
+                st.session_state.chat_history1.append((st.session_state.input, x))
         else:
             try:
                 docs = knowledge_base.similarity_search(st.session_state.input)
@@ -271,9 +271,9 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+                  st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
                   
             except:
                 llm = OpenAI()
@@ -290,11 +290,11 @@ def main():
                 x = pandas_ai.run(list(dataframes.values()), question)
 
                 if fig.get_axes():
-                    st.session_state.chat_history.append((st.session_state.input, fig))
+                    st.session_state.chat_history1.append((st.session_state.input, fig))
                 
                 else:
-                    st.session_state.chat_history.append((st.session_state.input, x))
-                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
+                    st.session_state.chat_history1.append((st.session_state.input, x))
+                    st.session_state.chat_history1_docs.append((st.session_state.input, str(x)))
                     
     else:
         if raw_text and not csv_files:
@@ -305,9 +305,9 @@ def main():
                 knowledge_base.as_retriever()
             )
             with get_openai_callback() as cb:
-              response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-              st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-              st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+              response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+              st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+              st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
               
         elif csv_files and not raw_text:
             llm = OpenAI()
@@ -325,10 +325,10 @@ def main():
             x = pandas_ai.run(list(dataframes.values()), question)
 
             if fig.get_axes():
-                st.session_state.chat_history.append((st.session_state.input, fig))
+                st.session_state.chat_history1.append((st.session_state.input, fig))
             
             else:
-                st.session_state.chat_history.append((st.session_state.input, x))
+                st.session_state.chat_history1.append((st.session_state.input, x))
             
         else:
             try:
@@ -339,9 +339,9 @@ def main():
                     knowledge_base.as_retriever()
                 )
                 with get_openai_callback() as cb:
-                  response = qa({"question": st.session_state.input, "chat_history": st.session_state.chat_history_docs})
-                  st.session_state.chat_history_docs.append((st.session_state.input, response["answer"]))
-                  st.session_state.chat_history.append((st.session_state.input, response["answer"]))
+                  response = qa({"question": st.session_state.input, "chat_history1": st.session_state.chat_history1_docs})
+                  st.session_state.chat_history1_docs.append((st.session_state.input, response["answer"]))
+                  st.session_state.chat_history1.append((st.session_state.input, response["answer"]))
                   
             except:
                 llm = OpenAI()
@@ -358,15 +358,15 @@ def main():
                 x = pandas_ai.run(list(dataframes.values()), question)
 
                 if fig.get_axes():
-                    st.session_state.chat_history.append((st.session_state.input, fig))
+                    st.session_state.chat_history1.append((st.session_state.input, fig))
                 
                 else:
-                    st.session_state.chat_history.append((st.session_state.input, x))
-                    st.session_state.chat_history_docs.append((st.session_state.input, str(x)))
+                    st.session_state.chat_history1.append((st.session_state.input, x))
+                    st.session_state.chat_history1_docs.append((st.session_state.input, str(x)))
 
 
     # Display chat history
-    for message in st.session_state.chat_history[::-1]:
+    for message in st.session_state.chat_history1[::-1]:
         if message[0]:
             st.write(user_msg_container_html_template.replace("$MSG", message[0]), unsafe_allow_html=True)
             try:

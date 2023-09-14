@@ -1,0 +1,40 @@
+/* Define a custom background color for the entire app */
+.main {
+            background-color: #2C3333;
+        }
+.stTextInput label {
+    color: #CBE4DE; /* Change the title color */
+}
+.stTextInput input[type="text"] {
+    background-color: #317873; /* Change the background color */
+    color: #CBE4DE; /* Change the text color */
+    border-radius: 5px; /* Add border-radius */
+} 
+.stSelectbox > div[data-baseweb="select"] > div {
+		background-color: #317873;
+		color: #CBE4DE;
+    		padding: 5px;
+	}
+
+.stSelectbox label {
+		color: #CBE4DE;
+	}
+
+.center-header {
+            text-align: center;
+            color: #CBE4DE; /* Set the text color */
+        }
+
+.custom-text {
+        color: #CBE4DE; /* Change the text color to your desired color */
+    }
+
+.css-1on073z.e1b2p2ww0 label{
+		color: #CBE4DE;
+	}
+.css-1on073z.e1b2p2ww0 button{
+		color: #CBE4DE;
+background-color: #317873;
+	}
+.css-1l4firl{color: #CBE4DE;
+}
